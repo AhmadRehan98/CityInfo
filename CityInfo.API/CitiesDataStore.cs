@@ -5,7 +5,8 @@ namespace CityInfo.API
     public class CitiesDataStore
     {
         public List<CityDto> Cities { get; set; }
-        public static CitiesDataStore Current { get; } = new CitiesDataStore();
+        //public static CitiesDataStore Current { get; } = new CitiesDataStore();
+        // this is commented out because it's replace by the singleton service in Program.cs
 
         public CitiesDataStore()
         {
