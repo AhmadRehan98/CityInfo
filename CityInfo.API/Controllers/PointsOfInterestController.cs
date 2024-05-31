@@ -9,6 +9,15 @@ namespace CityInfo.API.Controllers
     [ApiController]
     public class PointsOfInterestController : ControllerBase
     {
+        private readonly ILogger<PointsOfInterestController> _logger;
+
+        public PointsOfInterestController(ILogger<PointsOfInterestController> logger)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            // if you can't inject dependencies in the ctor, you can use this instead. syntax might be wrong:
+            // HttpContext.RequestServices.GetService<Logger<PointsOfInterestController>>();
+        }
+
         [HttpGet]
         public ActionResult<IEnumerable<PointOfInterestDto>> GetPointsOfInterest(int cityId)
         {
@@ -16,6 +25,7 @@ namespace CityInfo.API.Controllers
 
             if (city == null)
             {
+                _logger.LogInformation($"City with id {cityId} wasn't found when accessing points of interest.");
                 return NotFound();
             }
 

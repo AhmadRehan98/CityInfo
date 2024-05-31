@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.StaticFiles;
 
 var builder = WebApplication.CreateBuilder(args);
+//builder.Logging.ClearProviders(); // removes all configured logging providers
+//builder.Logging.AddConsole(); // adds console logger (added by default?)
 
 // Add services to the container.
 
