@@ -52,6 +52,10 @@ builder.Services.AddSingleton<CitiesDataStore>();
 // the first way is in CityInfoContext.cs commented out
 builder.Services.AddDbContext<CityInfoContext>(dbContextOptions => dbContextOptions.UseSqlServer(builder.Configuration["ConnectionStrings:CityInfoDBConnectionString"]));
 
+builder.Services.AddScoped<ICityInfoRepository, CityInfoRepository>(); // like dbcontext, this holds a reference too (?)
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
