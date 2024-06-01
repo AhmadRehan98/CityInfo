@@ -17,6 +17,33 @@ namespace CityInfo.API.Services
             return await _context.Cities.OrderBy(c=>c.Name).ToListAsync();
         }
 
+        public async Task<IEnumerable<City>> GetCitiesAsync(string? name, string? searchQuery)
+        {
+            if (string.IsNullOrEmpty(name) && string.IsNullOrWhiteSpace(searchQuery))
+            {
+                return await GetCitiesAsync();
+            }
+
+            // collection to start from
+            var collection = _context.Cities as IQueryable<City>; // allows defered execution by casting to IQueryable
+
+            // only filter
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                name = name.Trim(); // get rid of leading and trailing spaces
+                collection = collection.Where(c=> c.Name == name);
+            }
+
+            // only search query
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                searchQuery = searchQuery.Trim(); // get rid of leading and trailing spaces
+                collection = collection.Where(a => a.Name.Contains(searchQuery) || (a.Description != null && a.Description.Contains(searchQuery)));
+            }
+
+            return await collection.OrderBy(c => c.Name).ToListAsync();
+        }
+
         public async Task<City?> GetCityAsync(int cityId, bool includePointsOfInterest)
         {
             if (includePointsOfInterest)

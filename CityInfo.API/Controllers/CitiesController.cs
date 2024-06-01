@@ -21,11 +21,12 @@ namespace CityInfo.API.Controllers
 
         //[HttpGet("api/cities")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CityWithoutPointsOfInterestDto>>> GetCities()
+        // string name will be bound from the query string. thanks to [ApiController] tag. [FromQuery] is optional in this case. Also (Name = "name") is optional since it's identical to the parameter name "name".
+        public async Task<ActionResult<IEnumerable<CityWithoutPointsOfInterestDto>>> GetCities([FromQuery(Name = "name")] string? name, string? searchQuery)
         {
             //return Ok(_citiesdataStore.Cities); // old in memory db code
 
-            var cityEntities = await _cityInfoRepository.GetCitiesAsync();
+            var cityEntities = await _cityInfoRepository.GetCitiesAsync(name, searchQuery);
 
             //var results = new List<CityWithoutPointsOfInterestDto>();
             //foreach (var cityEntity in cityEntities)
