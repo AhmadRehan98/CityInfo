@@ -8,7 +8,7 @@ namespace CityInfo.API.Services
         Task<IEnumerable<City>> GetCitiesAsync(); // asynchronous
         // or
         //IQueryable<City> GetCities(); // consumer of repository can keep building on iqueryable. can add orderby, where, etc. clauses before query is executed.
-        Task<IEnumerable<City>> GetCitiesAsync(string? name, string? searchQuery);
+        Task<(IEnumerable<City>, PaginationMetaData)> GetCitiesAsync(string? name, string? searchQuery, int pageNumber, int pageSize);
 
         Task<City?> GetCityAsync(int cityId, bool includePointsOfInterest);
         Task<bool> CityExistsAsync(int cityId);

@@ -2,6 +2,7 @@
 using CityInfo.API.Models;
 using CityInfo.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace CityInfo.API.Controllers
 {
@@ -12,6 +13,7 @@ namespace CityInfo.API.Controllers
     {
         private readonly ICityInfoRepository _cityInfoRepository;
         private readonly IMapper _mapper;
+        const int maxCitiesPageSize = 20;
 
         public CitiesController(ICityInfoRepository cityInfoRepository, IMapper mapper)
         {
@@ -22,11 +24,17 @@ namespace CityInfo.API.Controllers
         //[HttpGet("api/cities")]
         [HttpGet]
         // string name will be bound from the query string. thanks to [ApiController] tag. [FromQuery] is optional in this case. Also (Name = "name") is optional since it's identical to the parameter name "name".
-        public async Task<ActionResult<IEnumerable<CityWithoutPointsOfInterestDto>>> GetCities([FromQuery(Name = "name")] string? name, string? searchQuery)
+        public async Task<ActionResult<IEnumerable<CityWithoutPointsOfInterestDto>>> GetCities([FromQuery(Name = "name")] string? name, string? searchQuery, int pageNumber = 1, int pageSize = 10)
         {
+            if (pageSize > maxCitiesPageSize)
+            {
+                pageSize = maxCitiesPageSize;
+            }
             //return Ok(_citiesdataStore.Cities); // old in memory db code
 
-            var cityEntities = await _cityInfoRepository.GetCitiesAsync(name, searchQuery);
+            var (cityEntities, paginationMetaData) = await _cityInfoRepository.GetCitiesAsync(name, searchQuery, pageNumber, pageSize);
+
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(paginationMetaData));
 
             //var results = new List<CityWithoutPointsOfInterestDto>();
             //foreach (var cityEntity in cityEntities)
